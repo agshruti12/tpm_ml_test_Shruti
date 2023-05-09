@@ -18,7 +18,6 @@ if __name__ == "__main__":
 	# Defines one class for each dataset.
 
 	# FULL DATASETS BELOW
-
 	# Juries
 	jury_feature_builder = FeatureBuilder(
 	 	input_file_path = "../feature_engine/data/raw_data/jury_conversations_with_outcome_var.csv",

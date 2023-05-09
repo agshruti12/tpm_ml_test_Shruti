@@ -13,6 +13,7 @@ The steps needed to add a feature would be to:
 
 # Importing modules from features
 import pandas as pd
+import multiprocessing as mp
 from features.basic_features import *
 from features.sentiment_features import *
 
@@ -60,4 +61,21 @@ class ChatLevelFeaturesCalculator:
 		"""
 			This function is where your sentiment function will be called.
 		"""
-		self.chat_data["sentiment"] = self.chat_data["message"].apply(get_sentiment)
+
+		#without parallelization
+		# self.chat_data["sentiment"] = self.chat_data["message"].apply(get_sentiment)
+		# self.chat_data["emotion"] = self.chat_data["message"].apply(get_sentiment_1)
+
+
+		#SOURCE:
+		#parallelization - runs in half the time!
+		with mp.Pool(processes=mp.cpu_count()) as pool:
+			results = pool.map(get_sentiment, self.chat_data['message'])
+			results2 = pool.map(get_sentiment_1, self.chat_data['message'])
+		self.chat_data['sentiment'] = results
+		self.chat_data['emotion'] = results2
+
+		
+
+
+
