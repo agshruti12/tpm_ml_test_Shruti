@@ -27,8 +27,9 @@ The first sentiment analysis method captures ideas from West et al. These author
 
 1d. Compared to how Troth et al. and West et al. measured positivity, what are some strengths and weaknesses of your approach?
 
-> quite binary, because we are using pretrained models, we aren't getting the highest levels of personalization in our analysis, but ML models take months to curate, so given our resources this is as good as it gets essentially
-strengths - using two metrics (pos/neg/neu) (emotions) both of which we can cross check with each other (positive comments should not have an emotional label of anger) which can help us narrow down how we are generating results and pinpoint our accuracy. 
+> A definite strength in my approach is using two metrics for positivity, which include the ternary pos/neu/neg rating as well as an emotional classification. Because we have two different labels for each message, we can cross check these results with each other to ensure we're getting as accurate results as possible (i.e. comments with a high positive rating should not have an emotional label of anger). This can help us narrow down which messages are being rated correctly vs. incorrectly, and we can further use this information to fine tune the ML model and get more accurate results that frame the specific focal task we're working on. Additionally, both these sets of authors emphasize how either (A) managing your teammates' emotions or (B) having greater POB capacities are necessary for increased performance, as they improve teamwork and coordination. My methods do a good job in detecting how positive/optimistic team mambers are and how often strong emotions are experienced, which gives us a good handle on both (A) and (B).
+
+A potential weakness of my approach is using pretrained ML models from HuggingFace, as it discounts personalization in the analysis. Because ML models take many weeks to build and make accurate, the best course of action is to observe how the messages behave in this pretrained environment, and fine tune the model based off of the inaccuracies to deplete any lack of precision. Another weakness is not considering the other POB variables (self efficacy and resilience) as directly as optimism, but those are fairly subjective capacities that would require higher level analysis to quantify. 
 
 
 ## 2. Method evaluation
@@ -36,11 +37,11 @@ Next, we would like you to consider how you would evaluate your method. How do y
 
 2a. Open up your output CSV and look at the columns you generated. Do the values “make sense” intuitively? Why or why not?
 
-> [YOUR ANSWER]
+> Yes, most of the values make sense intuitively, especially the pos/neu/neg ratings. All the messages I would perceive as positive are given a higher positive score, and similarly with the neutral/negative scores. The RoBERTa model was pretrained on tweets, which are similar to our messages, as they are also delivered casually over a virtual network, so the accurate tone mapping checks out. The emotion sentiment analysis method also does a good job, but I do notice some inaccuracies, which suggest there may need to be more fine-tuning done on this front. For example, one message says "purple is messing it up on purpose", which is given a high negative rating of 0.85 (as expected), but is given an emotion label of "neutral", which is inaccurate. 
 
 2b. Propose an evaluation mechanism for your method(s). What metric would you use (e.g., F1, AUC, Accuracy, Precision, Recall)?
 
-> [YOUR ANSWER]
+> 
 
 2c. Describe the steps you would take in evaluating this method. Be as specific as possible.
 
@@ -53,13 +54,22 @@ Next, we would like you to consider how you would evaluate your method. How do y
 ## 3. Overall reflection
 3a. How much time did it take you to complete this task? (Please be honest; we are looking for feedback to make sure the task is scoped appropriately, as this is one of the first times we’re using this task.)
 
-> 12-13 hours. 
+> 16-18 hours. 
 
 3b. Finally, provide an overall reflection of your experience. How did you approach this task? What challenge(s) did you encounter? If you had more time, what are additional extensions, improvements, or tests that you would want to implement?
 
-> [YOUR ANSWER]
-Great experience, learned a lot about machine learning algorithms, parallellization, as well as the social science concepts encompassing the project. I was impressed by how quickly I was able to absorb the material, and it makes me excited for future projects I may encounter. 
-Began the project doing the readings, which help frame the scope of the task. As I got my project started, however, I ran into various bugs upon just importing the code into my VSCode environment and running it.I interfaced with Emily during the process, and was able to understand a bit more about how the mechanics of the code work, which helped me debug the error and get a much better handle on how the program worked. 
-Implementing the sentiment analysis methods were relatively straightforward, as it really was a research/practical skills task as opposed to a programming task. Trying to figure out what was already out there, and incorporate it fittingly into this task was interesting to think about. Figuring out how to utilize multiple cores on my system definitely was a more programming-oriented task
+> 
+Overall, this task was a great experience! It exposed me to several novel ideas/concepts, including machine learning implementation techniques, parallelization, and social science literature. The bare skeleton of the task itself is minimally complex, but going one step further and connecting the work to the psychological chassis of the research requires far greater depth that I'm grateful I pushed myself to explore. 
 
-- talk about how both datasets operate differently, even though using same sentiment analysis methods for both, acknowledging that they will come into better use for the CSOP dataset than the Juries dataset, simply because of the empirical study done before and in the original writeup
+I originally approached this task sequentially, starting with the readings, which helped contextualize the project. However, once I imported the stub code into my environment, I found that I was encountering a KeyError when running my project; I decided to comment out this code, as it pertained to conversation level features, and revisited it later after having interfaced with Emily, who educated me a bit on the mechanics of the code. This propelled me into a deep dive analysis of how the code operated and (through some syntax lookup) helped me debug the error. In retrospect, this challenge gave me a much better handle on how the program worked/transfered dataframes and made future parallelization implementation much smoother.  
+
+Implementing the sentiment analysis methods were relatively straightforward, as it really was a research/practical skills task as opposed to a programming task. Searching for methods that would generate useful information about the datasets was an interesting activity that required me to revisit the readings and fully understand the needs/goals of this research. 
+
+The last big component of this work was figuring out how to parallelize the code. Even on the CSOP dataset, my code was taking 6 minutes to fully process without parallelization, so I eventually made it a priority to incorporate this feature into my program. Researching online gave me several different avenues I could take, a lot of which I tried (swifter, Parallel Pandas, pandarallel) because they seemed simpler to implement, but ended up not working because our parallelization ran on string text. This led me to research more complex implementations using maps and Pool, which in turn forced me to understand how the sentiment analysis methods were actually being applied to the dataframe. Because I have two sentiment analysis methods, I had to accomodate this additional complexity in my parallelization. Once I found the right resources and correctly implemented it, it cut my runtime for CSOP down to 2.5 minutes, allowing me to also run this code on the Juries dataset!
+
+If I had more time with this data, there is a lot more I'd hope to implement. First off, we were given a very sheltered view of the dataset, as we could only temporarily access one message at a time (by virtue of implementing chat features). If 
+
+- frequency of speaker contributions --> how much each person talked in the conversation, can be indicative for CSOP dataset as past research suggests (one person talking more leads to higher performance)
+- more even distribution may lead to higher Jury performance
+- use bag of words approach to analyze how "team oriented" a team is very self motivated, frequency of we, us vs i, me, you --> can help us realize which tasks require joint effort vs individualized effort
+- length of conversation and how time effects productivity, depending on the task -> (i.e. lose productivity/motiviation with time, or people get more comfortable with each other), can grade this also with the number of messages per conversation
