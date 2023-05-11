@@ -67,7 +67,7 @@ class ChatLevelFeaturesCalculator:
 		# self.chat_data["emotion"] = self.chat_data["message"].apply(get_sentiment_1)
 
 
-		#SOURCE:
+		#SOURCE: https://stackoverflow.com/questions/26784164/pandas-multiprocessing-apply 
 		#parallelization - runs in half the time!
 		with mp.Pool(processes=mp.cpu_count()) as pool:
 			results = pool.map(get_sentiment, self.chat_data['message'])
